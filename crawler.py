@@ -3,6 +3,7 @@ import oauth2 as oauth
 import time
 import random
 import config
+from pathlib import Path
 
 consumer_key=config.consumer_key
 consumer_secret=config.consumer_secret
@@ -66,6 +67,7 @@ def retrieve_rates(client,logfile):
         return content['resources']['friends']['/friends/ids']['remaining'],content['resources']['friends']['/friends/ids']['reset']
     else:
         print("Failed in retrieving rate limits info...")
+        return "-1","-1"
 
 
 consumer = oauth.Consumer(key=consumer_key,secret=consumer_secret)
@@ -77,6 +79,9 @@ client = oauth.Client(consumer,token)
 
 log = open('crawl_log.log','a')
 x_rate_remain,x_rate_reset = retrieve_rates(client,log)
+if x_rate_remain == "-1":
+    print("Terminate since failing to retrieve the rate infomation.")
+    
 meta = open('./data/user.txt','r')
 print("Opening metainfo file user.txt for read...")
 log.write("Opening metainfo file user.txt for read...\n")
@@ -86,6 +91,13 @@ user_set = set()
 for line in meta.readlines():
     last = line.strip('\n')
     count += 1
+    filename = "./data/%s.txt" % last
+    p = Path(filename)
+    if p.is_file():
+        print("Data for %s has already exist" % last)
+    else:
+        print("Data for %s is not found, Requesting tweets from twitter" % last)
+        retrieve_tweets(client,last,log)
     user_set.add(last)
 
 meta.close()
