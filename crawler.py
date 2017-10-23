@@ -44,7 +44,7 @@ def retrieve_friends(client,user_id,logfile):
     idlist = list()
     if resp['status'] == "200":
         print("Succeeded in retrieving friendslist")
-        logfile.write("Succeeded in retrieving friendslist\n")
+        logfile.write("Succeeded in retrieving friendslist\n")        
         content = json.loads(content)
         idlist = content['ids']
     else:
@@ -133,18 +133,19 @@ while infin_loop == True or expand_times > 0:
     if(len(id_list)==0):continue
     id_sample = random.sample(id_list,min(2,len(id_list)))
     for id in id_sample:
-        if str(id) not in user_set:
-            print("Gain a new user:%s" % str(id))
-            log.write("Gain a new user:%s\n" % str(id))
-            res = retrieve_tweets(client,str(id),log)
+        str_id = str(id)
+        if str_id not in user_set:
+            print("Gain a new user:%s" % str_id)
+            log.write("Gain a new user:%s\n" % str_id)
+            res = retrieve_tweets(client,str_id,log)
             if res:
-                meta.write(str(id)+"\n")
-                user_set.add(str(id))
-                to_search.append(str(id))
+                meta.write(str_id+"\n")
+                user_set.add(str_id)
+                to_search.append(str_id)
         else:
-            print("Found a old user:%s" % str(id))
-            log.write("Found a old user:%s\n" % str(id))
-            to_search.append(str(id))
+            print("Found a old user:%s" % str_id)
+            log.write("Found a old user:%s\n" % str_id)
+            to_search.append(str_id)
     if expand_times > 0: expand_times -= 1
 
 meta.close()
