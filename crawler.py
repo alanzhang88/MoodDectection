@@ -24,7 +24,10 @@ def retrieve_tweets(client,user_id,logfile):
         logfile.write("Succeeded in retrieving tweets, writing to file...\n")
         filename = "./data/%s.txt" % user_id
         f = open(filename,'w')
-        f.write(content)
+        if isinstance(content,str):
+            f.write(content)
+        else:
+            f.write(str(content))        
         f.close()
         return True
     else:
@@ -81,6 +84,7 @@ log = open('crawl_log.log','a')
 x_rate_remain,x_rate_reset = retrieve_rates(client,log)
 if x_rate_remain == "-1":
     print("Terminate since failing to retrieve the rate infomation.")
+    quit()
     
 meta = open('./data/user.txt','r')
 print("Opening metainfo file user.txt for read...")
