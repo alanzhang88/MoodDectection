@@ -25,13 +25,13 @@ def location_filter(input_tweet,target_loc):
             return True
     return False
 
-def retrieve_tweets(client,user_id,logfile,filter=None):
+def retrieve_tweets(client,user_id,logfile,myfilter=None):
     twitter_url = ("https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=%s&count=200" % user_id)
     print("Requesting for timeline for user %s..." % user_id)
     logfile.write("Requesting for timeline for user %s...\n" % user_id)
     resp, content = client.request(uri=twitter_url,method="GET")
     if resp['status'] == "200":
-        if filter == None:
+        if myfilter == None:
             print("Succeeded in retrieving tweets, writing to file...")
             logfile.write("Succeeded in retrieving tweets, writing to file...\n")
             filename = "./data/%s.txt" % user_id
@@ -50,7 +50,7 @@ def retrieve_tweets(client,user_id,logfile,filter=None):
                 print("Empty tweets, skipping the user...")
                 logfile.write("Empty tweets, skipping the user...\n")
                 return False
-            ret = location_filter(j[0],target_location)
+            ret = myfilter(j[0],target_location)
             if ret:
                 print("Passed the filter, writing to files...")
                 logfile.write("Passed the filter, writing to files...\n")
