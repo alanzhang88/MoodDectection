@@ -13,23 +13,60 @@ access_token_secret=config.access_token_secret
 
 infin_loop = config.infin_loop
 expand_times = config.expand_times
+target_location = config.target_location
+sample_size = config.sample_size
 
-def retrieve_tweets(client,user_id,logfile):
+def location_filter(input_tweet,target_loc):
+    if input_tweet['user']['location'] == None:
+        return False
+    input_loc = input_tweet['user']['location']
+    for loc in target_loc:
+        if loc in input_loc:
+            return True
+    return False
+
+def retrieve_tweets(client,user_id,logfile,filter=None):
     twitter_url = ("https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=%s&count=200" % user_id)
     print("Requesting for timeline for user %s..." % user_id)
     logfile.write("Requesting for timeline for user %s...\n" % user_id)
     resp, content = client.request(uri=twitter_url,method="GET")
     if resp['status'] == "200":
-        print("Succeeded in retrieving tweets, writing to file...")
-        logfile.write("Succeeded in retrieving tweets, writing to file...\n")
-        filename = "./data/%s.txt" % user_id
-        f = open(filename,'w')
-        if isinstance(content,str):
-            f.write(content)
+        if filter == None:
+            print("Succeeded in retrieving tweets, writing to file...")
+            logfile.write("Succeeded in retrieving tweets, writing to file...\n")
+            filename = "./data/%s.txt" % user_id
+            f = open(filename,'w')
+            if isinstance(content,str):
+                f.write(content)
+            else:
+                f.write(str(content))        
+            f.close()
+            return True
         else:
-            f.write(str(content))        
-        f.close()
-        return True
+            print("Succeeded in retrieving tweets, entering filter...")
+            logfile.write("Succeeded in retrieving tweets, entering filter...\n")
+            j = json.loads(content)
+            if len(j)==0:
+                print("Empty tweets, skipping the user...")
+                logfile.write("Empty tweets, skipping the user...\n")
+                return False
+            ret = location_filter(j[0],target_location)
+            if ret:
+                print("Passed the filter, writing to files...")
+                logfile.write("Passed the filter, writing to files...\n")
+                filename = "./data/%s.txt" % user_id
+                f = open(filename,'w')
+                if isinstance(content,str):
+                    f.write(content)
+                else:
+                    f.write(str(content))        
+                f.close()
+                return True
+            else:
+                print("Failed the filter, skipping the user...")
+                logfile.write("Failed the filter, skipping the user...\n")
+                return False
+
     else:
         print("Failed in retrieving tweets")
         print("status:%s" % resp['status'])
@@ -109,7 +146,7 @@ print("Finished reading metafile with %d users and the last user is %s..." % (co
 log.write("Finished reading metafile with %d users and the last user is %s...\n" % (count,last))
 meta = open('./data/user.txt','a')
 
-retrieve_tweets(client,last,log)
+retrieve_tweets(client,last,log,location_filter)
 
 to_search = list()
 to_search.append(last)
@@ -126,18 +163,18 @@ while infin_loop == True or expand_times > 0:
             time.sleep(reset-now)
 
     if len(to_search)==0:
-        to_search = random.sample(user_set,min(2,len(user_set)))
+        to_search = random.sample(user_set,min(sample_size,len(user_set)))
 
     to_search_id = to_search.pop(0)
     id_list, x_rate_remain, x_rate_reset = retrieve_friends(client,to_search_id,log)
     if(len(id_list)==0):continue
-    id_sample = random.sample(id_list,min(2,len(id_list)))
+    id_sample = random.sample(id_list,min(sample_size,len(id_list)))
     for id in id_sample:
         str_id = str(id)
         if str_id not in user_set:
             print("Gain a new user:%s" % str_id)
             log.write("Gain a new user:%s\n" % str_id)
-            res = retrieve_tweets(client,str_id,log)
+            res = retrieve_tweets(client,str_id,log,location_filter)
             if res:
                 meta.write(str_id+"\n")
                 user_set.add(str_id)
