@@ -31,6 +31,16 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
     print("Requesting for timeline for user %s..." % user_id)
     logfile.write("Requesting for timeline for user %s...\n" % user_id)
     resp, content = client.request(uri=twitter_url,method="GET")
+    if resp['x-rate-limit-remaining'] == "0":
+        print("x-rate-remain for retrieve tweet is 0")
+        log.write("x-rate-remain for retrieve tweet is 0\n")
+        reset = long(resp['x-rate-limit-reset'])
+        now = long(time.time())
+        if(now<reset):
+            print("Sleeping for %d" % (reset - now))
+            log.write("Sleeping for %d\n" % (reset - now))
+            time.sleep(reset-now)
+            
     if resp['status'] == "200":
         if myfilter == None:
             print("Succeeded in retrieving tweets, writing to file...")
