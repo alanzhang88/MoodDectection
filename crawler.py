@@ -37,10 +37,10 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
         reset = long(resp['x-rate-limit-reset'])
         now = long(time.time())
         if(now<reset):
-            print("Sleeping for %d" % (reset - now))
-            log.write("Sleeping for %d\n" % (reset - now))
-            time.sleep(reset-now)
-            
+            print("Sleeping for %d" % (reset - now + 5))
+            log.write("Sleeping for %d\n" % (reset - now + 5))
+            time.sleep(reset-now+5)
+
     if resp['status'] == "200":
         if myfilter == None:
             print("Succeeded in retrieving tweets, writing to file...")
@@ -181,9 +181,9 @@ while infin_loop == True or expand_times > 0:
         reset = long(x_rate_reset)
         now = long(time.time())
         if(now<reset):
-            print("Sleeping for %d" % (reset - now))
-            log.write("Sleeping for %d\n" % (reset - now))
-            time.sleep(reset-now)
+            print("Sleeping for %d" % (reset - now + 5))
+            log.write("Sleeping for %d\n" % (reset - now + 5))
+            time.sleep(reset-now+5)
 
     if len(to_search)==0:
         to_search = random.sample(user_set,min(sample_size,len(user_set)))
