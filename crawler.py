@@ -2,6 +2,7 @@ import json
 import oauth2 as oauth
 import time
 import random
+import os
 import config
 from pathlib import Path
 
@@ -39,7 +40,7 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
             if isinstance(content,str):
                 f.write(content)
             else:
-                f.write(str(content))        
+                f.write(str(content))
             f.close()
             return True
         else:
@@ -59,7 +60,7 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
                 if isinstance(content,str):
                     f.write(content)
                 else:
-                    f.write(str(content))        
+                    f.write(str(content))
                 f.close()
                 return True
             else:
@@ -81,7 +82,7 @@ def retrieve_friends(client,user_id,logfile):
     idlist = list()
     if resp['status'] == "200":
         print("Succeeded in retrieving friendslist")
-        logfile.write("Succeeded in retrieving friendslist\n")        
+        logfile.write("Succeeded in retrieving friendslist\n")
         content = json.loads(content)
         idlist = content['ids']
     else:
@@ -112,7 +113,7 @@ def retrieve_rates(client,logfile):
 
 consumer = oauth.Consumer(key=consumer_key,secret=consumer_secret)
 token = oauth.Token(access_token,access_token_secret)
-                    
+
 client = oauth.Client(consumer,token)
 #x_rate_remain = "15"
 #x_rate_reset = ""
@@ -122,7 +123,7 @@ x_rate_remain,x_rate_reset = retrieve_rates(client,log)
 if x_rate_remain == "-1":
     print("Terminate since failing to retrieve the rate infomation.")
     quit()
-    
+
 meta = open('./data/user.txt','r')
 print("Opening metainfo file user.txt for read...")
 log.write("Opening metainfo file user.txt for read...\n")
@@ -136,12 +137,24 @@ for line in meta.readlines():
     p = Path(filename)
     if p.is_file():
         print("Data for %s has already exist" % last)
+        user_set.add(last)
     else:
         print("Data for %s is not found, Requesting tweets from twitter" % last)
-        retrieve_tweets(client,last,log)
-    user_set.add(last)
+        ret_status = retrieve_tweets(client,last,log,location_filter)
+        if ret_status:
+            user_set.add(last)
+
 
 meta.close()
+
+if count > len(user_set):
+    print("Filtered out %d user in the orginal user meta file" % (count-len(user_set)))
+    meta = open('./data/user.txt','w')
+    for u in user_set:
+        meta.write(u+'\n')
+    meta.close()
+    count = len(user_set)
+
 print("Finished reading metafile with %d users and the last user is %s..." % (count,last))
 log.write("Finished reading metafile with %d users and the last user is %s...\n" % (count,last))
 meta = open('./data/user.txt','a')
@@ -187,4 +200,3 @@ while infin_loop == True or expand_times > 0:
 
 meta.close()
 log.close()
-
