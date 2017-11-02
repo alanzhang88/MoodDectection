@@ -50,12 +50,12 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
             ############### added #####
             if(f):
             	j = json.loads(content)
+                json.dump(j,f)
             ############################
             #if isinstance(content,str):
                 #f.write(content)
             #else:
                 #f.write(str(content))
-            json.dump(j,f)
             f.close()
             return True
         else:
