@@ -48,7 +48,7 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
             filename = "./data/%s.txt" % user_id
             f = open(filename,'w')
             ############### added #####
-            if(f):
+            if(content):
             	j = json.loads(content)
                 json.dump(j,f)
             ############################
