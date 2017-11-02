@@ -47,10 +47,15 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
             logfile.write("Succeeded in retrieving tweets, writing to file...\n")
             filename = "./data/%s.txt" % user_id
             f = open(filename,'w')
-            if isinstance(content,str):
-                f.write(content)
-            else:
-                f.write(str(content))
+            ############### added #####
+            if(f):
+            	j = json.loads(content)
+            ############################
+            #if isinstance(content,str):
+                #f.write(content)
+            #else:
+                #f.write(str(content))
+            json.dump(j,f)
             f.close()
             return True
         else:
@@ -67,10 +72,11 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
                 logfile.write("Passed the filter, writing to files...\n")
                 filename = "./data/%s.txt" % user_id
                 f = open(filename,'w')
-                if isinstance(content,str):
-                    f.write(content)
-                else:
-                    f.write(str(content))
+                #if isinstance(content,str):
+                #    f.write(content)
+                #else:
+                #    f.write(str(content))
+                json.dump(j,f)
                 f.close()
                 return True
             else:
