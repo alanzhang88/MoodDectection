@@ -240,11 +240,13 @@ if x_rate_remain == "-1":
 
 #added
 visited_user = []
-with open('./data/visited_user.txt', 'r') as visited:
-    for line in visited.readlines():
-        last = line.strip('\n')
-        visited_user.append(last)
-visited.closed
+visited_file = Path('./data/visited_user.txt')
+if visited_file.is_file():
+	with open('./data/visited_user.txt', 'r') as visited:
+		for line in visited.readlines():
+			last = line.strip('\n')
+			visited_user.append(last)
+	visited.closed
 #added
 meta = open('./data/user.txt','r')
 print("Opening metainfo file user.txt for read...")
@@ -289,7 +291,7 @@ if count > len(user_set):
 print("Finished reading metafile with %d users and the last user is %s..." % (count,last))
 log.write("Finished reading metafile with %d users and the last user is %s...\n" % (count,last))
 meta = open('./data/user.txt','a')
-
+visited = open('./data/visited_user.txt', 'a')
 #retrieve_tweets(client,last,log,location_filter)
 
 to_search = list()
@@ -320,14 +322,16 @@ while infin_loop == True or expand_times > 0:
             log.write("Gain a new user:%s\n" % str_id)
             res = retrieve_tweets(client,str_id,log,location_filter)
             if res:
-                meta.write(str_id+"\n")
-                user_set.add(str_id)
-                to_search.append(str_id)
+				visited.write(str_id+"\n")
+				meta.write(str_id+"\n")
+				user_set.add(str_id)
+				to_search.append(str_id)
         else:
             print("Found a old user:%s" % str_id)
             log.write("Found a old user:%s\n" % str_id)
             to_search.append(str_id)
     if expand_times > 0: expand_times -= 1
 
+visited.close()
 meta.close()
 log.close()
