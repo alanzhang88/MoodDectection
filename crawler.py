@@ -264,10 +264,10 @@ for line in meta.readlines():
         print("Data for %s is not found, Requesting tweets from twitter" % last)
         ret_status = retrieve_tweets(client,last,log,location_filter)
         if ret_status:
-            user_set.add(last)
-        with open('./data/visited_user.txt', 'a') as visited:
-            visited.write(last+'\n')
-        visited.closed
+			user_set.add(last)
+			visited = open('./data/visited_user.txt', 'a')
+			visited.write(last+'\n')
+			visited.close()
     #filename = "./data/%s.txt" % last
     #p = Path(filename)
     #if p.is_file():
