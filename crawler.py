@@ -285,9 +285,9 @@ for line in meta.readlines():
         ret_status = retrieve_tweets(client,last,log,location_filter)
         if ret_status:
             user_set.add(last)
-        with open('./data/visited_user.txt', 'a') as visited:
+            visited = open('./data/visited_user.txt', 'a')
             visited.write(last+'\n')
-        visited.closed
+            visited.close()
     #filename = "./data/%s.txt" % last
     #p = Path(filename)
     #if p.is_file():
@@ -343,9 +343,9 @@ while infin_loop == True or expand_times > 0:
             res = retrieve_tweets(client,str_id,log,location_filter)
             if res:
                 user_set.add(last)
-                visited = open('./data/visited_user.txt', 'a')
-                visited.write(last+'\n')
-                visited.close()
+                meta.write(str_id+"\n")
+                visited.write(str_id+"\n")
+                to_search.append(str_id)
         else:
             print("Found a old user:%s" % str_id)
             log.write("Found a old user:%s\n" % str_id)
