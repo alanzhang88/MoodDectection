@@ -142,8 +142,8 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
     if resp['x-rate-limit-remaining'] == "0":
         print("x-rate-remain for retrieve tweet is 0")
         log.write("x-rate-remain for retrieve tweet is 0\n")
-        reset = long(resp['x-rate-limit-reset'])
-        now = long(time.time())
+        reset = int(resp['x-rate-limit-reset'])
+        now = int(time.time())
         if(now<reset):
             print("Sleeping for %d" % (reset - now + 5))
             log.write("Sleeping for %d\n" % (reset - now + 5))
@@ -162,6 +162,8 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
                 print_str = "Successfully filter %d tweets from %d tweets..." % (count_filter,len(j))
                 print(print_str)
                 logfile.write(print_str)
+                return True
+            return False
             ####added#####
             #f = open(filename,'w')
             #####
@@ -172,7 +174,7 @@ def retrieve_tweets(client,user_id,logfile,myfilter=None):
             #####
 
             #f.close()
-            return True
+            #return True
         else:
             print("Succeeded in retrieving tweets, entering filter...")
             logfile.write("Succeeded in retrieving tweets, entering filter...\n")
@@ -321,8 +323,8 @@ while infin_loop == True or expand_times > 0:
     if(x_rate_remain=="0"):
         print("x-rate-remain:0")
         log.write("x-rate-remain:0\n")
-        reset = long(x_rate_reset)
-        now = long(time.time())
+        reset = int(x_rate_reset)
+        now = int(time.time())
         if(now<reset):
             print("Sleeping for %d" % (reset - now + 5))
             log.write("Sleeping for %d\n" % (reset - now + 5))
