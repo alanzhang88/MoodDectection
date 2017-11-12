@@ -18,20 +18,40 @@ expand_times = config.expand_times
 target_location = config.target_location
 sample_size = config.sample_size
 
+
 def classify(json_obj):
     text = json_obj["text"]
     text_lower = text.lower()
+    count_happy = 0
+    count_love = 0
+    count_anticipation = 0
+    count_surprise = 0
+    count_disgust = 0
+    count_fear = 0
+    count_anger = 0
+    count_sad = 0
+    count_happy += text_lower.count(u"\U0001F600")+ text_lower.count(u"\U0001F601")+text_lower.count(u"\U0001F602")+ text_lower.count(u"\U0001F603")+text_lower.count(u"\U0001F604")+text_lower.count(u"\U0001F605")+text_lower.count(u"\U0001F606")+text_lower.count(u"\U0001F60A")+text_lower.count(u"\U0001F60B")+text_lower.count(u"\U0001F60E")+text_lower.count(u"\U0001F60D")+text_lower.count(u"\U0001F618")
+    count_love += text_lower.count(u"\U0001F60D")+ text_lower.count(u"\U0001F618")+ text_lower.count(u"\U0001F617")+ text_lower.count(u"\U0001F619")+ text_lower.count(u"\U0001F61A")+ text_lower.count(u"\U0001F63B")+ text_lower.count(u"\U0001F9D6")+ text_lower.count(u"\U0001F48F")+ text_lower.count(u"\U0001F469")+ text_lower.count(u"\U0001F48B")+ text_lower.count(u"\U0001F498")+ text_lower.count(u"\U0001F493")+ text_lower.count(u"\U0001F495")+ text_lower.count(u"\U0001F496")+ text_lower.count(u"\U0001F497")+ text_lower.count(u"\U0001F499")
+    count_anticipation += text_lower.count(u"\U0001F60D")+ text_lower.count(u"\U0001F63B")
+    count_surprise += text_lower.count(u"\U0001F631")+ text_lower.count(u"\U0001F62E")+ text_lower.count(u"\U0001F62F")+ text_lower.count(u"\U0001F626")+ text_lower.count(u"\U0001F640")
+    count_disgust += text_lower.count(u"\U0001F922")+ text_lower.count(u"\U0001F92E")+ text_lower.count(u"\U0001F4A9")
+    count_fear += text_lower.count(u"\U0001F616")+ text_lower.count(u"\U0001F623")+ text_lower.count(u"\U0001F628")+ text_lower.count(u"\U0001F631")+ text_lower.count(u"\U0001F632")+ text_lower.count(u"\U0001F635")+ text_lower.count(u"\U0001F637")+ text_lower.count(u"\U0001F640")+ text_lower.count(u"\U0001F64F")+ text_lower.count(u"\U0001F648")+ text_lower.count(u"\U0001F649")+ text_lower.count(u"\U0001F64A")+ text_lower.count(u"\U0001F633")+ text_lower.count(u"\U0001F628")
+    count_anger += + text_lower.count(u"\U0001F620") + text_lower.count(u"\U0001F621")+ text_lower.count(u"\U0001F624")+ text_lower.count(u"\U0001F629")+ text_lower.count(u"\U0001F63E")+ text_lower.count(u"\U0001F644")+ text_lower.count(u"\U0001F643")+ text_lower.count(u"\U0001F47F")
+    count_sad += text_lower.count(u"\U0001F622")+ text_lower.count(u"\U0001F614")+ text_lower.count(u"\U0001F61E")+ text_lower.count(u"\U0001F494")
+    if(text_lower.find("looking forward") != -1):
+        count_anticipation += 1
+    if(text_lower.find("lost for words") != -1):
+        count_surprise += 1
     words = text_lower.split()
     c = Counter(words)
-    # add more emoji for happy later
-    count_happy = c["lol"] + c["happy"] + c["great"]+ c["awesome"]+ c["cool"]+ c["enjoying"]+ c["funny"]+ c["haha"]+ c["hahaha"]+ c["thank"]+ c["like"]+ c["good"]+ c["beautiful"]+ c["amazing"]+ c["lovely"]+ c["wonderful"]+ c[":)"]+ c[":-)"]+ c["\U0001F600"]+ c["\U0001F601"]+ c["\U0001F602"]+ c["\U0001F603"]+c["\U0001F604"]+c["\U0001F605"]+c["\U0001F606"]+c["\U0001F609"]+c["\U0001F60A"]+c["\U0001F60B"]+c["\U0001F60E"]+c["\U0001F60D"]+c["\U0001F617"]+c["\U0001F618"]+c["\U0001F619"]+c["\U0001F61A"]+c["\U0001F642"]+c["\U0001F917"]+c["\U0001F923"]+c["\U0001F638"]+c["\U0001F639"]+c["\U0001F63A"]
-    count_love = c["valentine"]+ c["romantic"]+ c["marry"]+ c["engage"]+ c["baby"]+ c["bae"]+ c["dating"]+ c["crush"]+ c["relationship"]+ c["ring"]+ c["wedding"]+ c["\U0001F60D"]+ c["\U0001F618"]+ c["\U0001F493"]+ c["\U0001F495"]+ c["\U0001F491"]
-    count_anticipation = c["expect"]+ c["hope"]+ c["intent"]+ c["intention"]+ c["expectation"]+ c["forward"]+ c["contemplate"]+ c["contemplation"]+ c["prospect"]+ c["\U0001F60D"]+ c["\U0001F63B"]
-    count_surprise = c["surprise"]+ c["omg"]+ c["shocked"]+ c["amazed"]+ c["speechless"]+ c["astonished"]+ c["jesus"]+ c["holy"]+ c["gosh"]+ c["oh"]+ c["god"]+ c["wow"]+ c["\U0001F631"]+ c["\U0001F62E"]+ c["\U0001F62F"]+ c["\U0001F626"]+ c["\U0001F640"]
-    count_disgust = c["disgusting"]+ c["disgust"]+ c["revloting"]+ c["nasty"]+ c["sick"]+ c["infest"]+ c["rotten"]+ c["shitty"]+ c["awful"]+ c["repulsive"]+ c["vomit"]
-    count_fear = c["afraid"]+ c["freak"]+ c["scared"]+ c["nervous"]+ c["paralyzed"]+ c["terrifying"]+ c["anxious"]+ c["worried"]+ c["pertrified"]+ c["nightmare"]+ c["\U0001F616"]+ c["\U0001F623"]+ c["\U0001F628"]+ c["\U0001F631"]+ c["\U0001F632"]+ c["\U0001F635"]+ c["\U0001F637"]+ c["\U0001F640"]+ c["\U0001F64F"]+ c["\U0001F648"]+ c["\U0001F649"]+ c["\U0001F64A"]+ c["\U0001F633"]+ c["\U0001F628"]
-    count_anger = c["angry"]+ c["annoyed"]+ c["mad"]+ c["furious"]+ c["fucking"]+ c["pissoff"]+ c["hate"]+ c["u1f620"]+ c["\U0001F621"]+ c["\U0001F624"]+ c["\U0001F629"]+ c["\U0001F63E"]+ c["\U0001F644"]+ c["\U0001F643"]+ c["\U0001F67F"]+ c["\U0001F603"]
-    count_sad = c["sad"]+ c["cry"]+ c["upset"]+ c["unhappy"]+ c["poor"]+ c["tragic"]+ c["disaster"]+ c["miss"]+ c["disappointed"]+ c["sorry"]+ c["depressed"]+ c["dejected"]+ c["break"]+ c["alone"]+ c["hurt"]+ c["hurts"]+ c["miserable"]+ c["mournful"]+ c[":("]+ c["\U0001F622"]+ c["\U0001F62D"]+ c["\U0001F614"]+ c["\U0001F641"]+ c["\U0001F612"]+ c["\U0001F61E"]+ c["\U0001F627"]+ c["\U0001F494"]
+    count_happy += c["lol"] + c["happy"] + c["awesome"]+ c["haha"]+ c["hahaha"]+ c["thank"]+ c["amazing"]+ c[":)"]+ c[":-)"] +c[":D"]
+    count_love += c["valentine"]+ c["romantic"]+ c["marry"]+ c["engage"]+ c["baby"]+ c["bae"]+ c["dating"]+ c["crush"]+ c["relationship"]+ c["ring"]+ c["wedding"]
+    count_anticipation += c["expect"]+ c["expectation"]+ c["hope"]+ c["intent"]+ c["intention"]+ c["contemplate"]+ c["contemplation"]+ c["prospect"]+ c["excited"]+ c["thank"]+ c["amazing"]
+    count_surprise += c["surprise"]+ c["omg"]+ c["shocked"]+ c["amazed"]+ c["speechless"]+ c["astonished"]+ c["jesus"]+ c["holy"]+ c["gosh"]+ c["oh"]+ c["god"]+ c["wow"]
+    count_disgust += c["disgusting"]+ c["disgust"]+ c["revloting"]+ c["nasty"]+ c["sick"]+ c["infest"]+ c["rotten"]+ c["shitty"]+ c["awful"]+ c["repulsive"]+ c["vomit"]+ c["disgust"]
+    count_fear += c["afraid"]+ c["haunted"]+ c["ghost"]+c["freak"]+ c["horror"]+ c["scared"]+ c["scary"]+ c["nervous"]+ c["terrifying"]+ c["anxious"]+ c["worried"]+ c["nightmare"]
+    count_anger += c["angry"]+ c["annoyed"]+ c["mad"]+ c["furious"]+ c["fucking"]+ c["piss"]+ c["hate"]+c["shuts"]+c["shut"]+c["fuck"]+c["annoying"]
+    count_sad += c["sad"]+ c["cry"]+ c["upset"]+ c["unhappy"]+ c["poor"]+ c["tragic"]+ c["disaster"]+ c["disappointed"]+ c["sorry"]+ c["break"]+ c["alone"]+ c["hurt"]+ c["hurts"]+ c["miserable"]+ c[":("]
     # 0 for nothing, 1 happy, 2 love, 3 anticipation, 4 surprise, 5 disgust, 6 fear, 7 anger, 8 sad
     if(count_happy==0 and count_love==0 and count_anticipation==0 and count_surprise==0 and count_disgust==0 and count_fear==0 and count_anger==0 and count_sad==0):
         return 0
@@ -264,10 +284,10 @@ for line in meta.readlines():
         print("Data for %s is not found, Requesting tweets from twitter" % last)
         ret_status = retrieve_tweets(client,last,log,location_filter)
         if ret_status:
-			user_set.add(last)
-			visited = open('./data/visited_user.txt', 'a')
-			visited.write(last+'\n')
-			visited.close()
+            user_set.add(last)
+        with open('./data/visited_user.txt', 'a') as visited:
+            visited.write(last+'\n')
+        visited.closed
     #filename = "./data/%s.txt" % last
     #p = Path(filename)
     #if p.is_file():
@@ -322,10 +342,10 @@ while infin_loop == True or expand_times > 0:
             log.write("Gain a new user:%s\n" % str_id)
             res = retrieve_tweets(client,str_id,log,location_filter)
             if res:
-				visited.write(str_id+"\n")
-				meta.write(str_id+"\n")
-				user_set.add(str_id)
-				to_search.append(str_id)
+                user_set.add(last)
+                visited = open('./data/visited_user.txt', 'a')
+                visited.write(last+'\n')
+                visited.close()
         else:
             print("Found a old user:%s" % str_id)
             log.write("Found a old user:%s\n" % str_id)
