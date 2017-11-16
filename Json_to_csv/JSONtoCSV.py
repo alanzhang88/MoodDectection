@@ -11,9 +11,17 @@ import json
 import re
 
 import os
+import config
 
-folderpath = "C:/WendyCui/CS145/project/data/stream_data" #folder's path
-files= os.listdir(folderpath) #get all the files' name in the folder
+timeIntervalLength = config.timeIntervalLength
+
+
+def filter_time(s):
+    return str(int(int(s.split()[3][0:2])/timeIntervalLength))
+
+folderpath = "../data/" #folder's path
+#files= os.listdir(folderpath) #get all the files' name in the folder
+files = ["anger.txt","surprise.txt","happy.txt","sad.txt","disgust.txt","fear.txt","anticipation.txt","love.txt"]
 
 #regular representation#
 try:# Wide UCS-4 build
@@ -70,6 +78,7 @@ for file in files:
              dic = json.loads(line)
              user_dict = dict((key, value) for key, value in dic['user'].items() if key in user_keys)
              tweet_dict = dict((key, value) for key, value in dic.items() if key in tweet_keys)
+             tweet_dict["created_at"] = filter_time(tweet_dict["created_at"]) 
              #unicode filter for dict values#
              if(user_dict != {} and tweet_dict != {}):
                  for user_key in user_dict.keys():
@@ -82,6 +91,7 @@ for file in files:
                      tweet_dict[tweet_key] = myre.sub('',temp)
                  
                  final_dict = {**tweet_dict,**user_dict,**label_dict}
+                 #final_dict["created_at"] = filter_time(final_dict["created_at"])
                  writer.writerow(final_dict)
          csvfile.close()
          txtfile.close()
