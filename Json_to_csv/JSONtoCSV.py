@@ -15,6 +15,37 @@ import config
 
 timeIntervalLength = config.timeIntervalLength
 
+def event_filter(text,event_dic):
+    if(text.find('traffic') != -1):
+        event_dic['traffic'] = 1
+    elif(text.find('wedding') != -1):
+        event_dic['wedding'] = 1
+    elif(text.find('shooting') != -1):
+        event_dic['shooting'] = 1
+    elif(text.find('birthday') != -1 or dic['text'].find('bday') != -1):
+        event_dic['birthday'] = 1
+    elif(text.find('concert') != -1):
+        event_dic['concert'] = 1
+    elif(text.find('funeral') != -1):
+        event_dic['funeral'] = 1
+    elif(text.find('exam') != -1):
+        event_dic['exam'] = 1
+    elif(text.find('sports') != -1):
+        event_dic['sports'] = 1
+    elif(text.find('festival') != -1):
+        event_dic['festival'] = 1
+    elif(text.find('anniversary') != -1):
+        event_dic['anniversary'] = 1
+    elif(text.find('movie') != -1):
+        event_dic['movie'] = 1
+    return event_dic
+
+def weather_filter(text,weather_dic):
+    if(text.find('sunny') != -1 or dic['text'].find('snow') != -1):
+        weather_dic['good weather'] = 1
+    elif(text.find('scorching') != -1 or text.find('cold') != -1  or text.find('cloudy') != -1 or text.find('storm') != -1 or text.find('rainy') != -1 or text.find('windy') != -1 or text.find('humid') != -1):
+        weather_dic['bad weather'] = 1
+    return weather_dic
 
 def filter_time(s):
     return str(int(int(s.split()[3][0:2])/timeIntervalLength))
@@ -42,7 +73,7 @@ for file in files:
          #jsonData = open(folderpath + "/" + file) #csvfile = open(path+'.csv', 'w')#此处这样写会导致写出来的文件会有空行 
          txtfile = open(folderpath + "/" + file)
          csvfile = open(folderpath + "/" + file[:-4] + '.csv', 'w',newline='')
-         selected_keys = ['created_at','favorite_count','retweet_count','id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count','label']
+         selected_keys = ['created_at','favorite_count','retweet_count','id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count','traffic','wedding','shooting','birthday','concert','funeral','exam','sports','festival','movie','anniversary','good weather','bad weather','label']
          tweet_keys = ['created_at','favorite_count','retweet_count']
          user_keys = ['id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count']
          #lines = jsonData.readlines()
@@ -75,7 +106,12 @@ for file in files:
                 continue
              if (line.find('created_at') == -1): #remove unuseful line
                 continue
+             event_dic = {'traffic': 0,'wedding': 0,'shooting': 0,'birthday': 0,'concert': 0,'funeral': 0,'exam': 0,'sports': 0,'festival': 0,'movie': 0,'anniversary': 0}
+             weather_dic = {'bad weather':0,'good weather':0}
+             
              dic = json.loads(line)
+             event_dic = event_filter(dic['text'],event_dic)
+             weather_dic = weather_filter(dic['text'],weather_dic)
              user_dict = dict((key, value) for key, value in dic['user'].items() if key in user_keys)
              tweet_dict = dict((key, value) for key, value in dic.items() if key in tweet_keys)
              tweet_dict["created_at"] = filter_time(tweet_dict["created_at"]) 
