@@ -14,6 +14,21 @@ import os
 import config
 
 timeIntervalLength = config.timeIntervalLength
+followers_count_low = config.followers_count_low
+followers_count_high = config.followers_count_high
+friends_count_low = config.friends_count_low
+friends_count_high = config.friends_count_high
+listed_count_low = config.listed_count_low
+listed_count_high = config.listed_count_high
+favourites_count_low = config.favourites_count_low
+favourites_count_high = config.favourites_count_high
+statuses_count_low = config.statuses_count_low
+statuses_count_mid = config.statuses_count_mid
+statuses_count_high = config.statuses_count_high
+retweet_count_low = config.retweet_count_low
+retweet_count_high = config.retweet_count_high
+favorite_count_low = config.favorite_count_low
+favorite_count_high = config.favorite_count_high
 
 def event_filter(text,event_dic):
     if(text.find('traffic') != -1):
@@ -49,6 +64,71 @@ def weather_filter(text,weather_dic):
 
 def filter_time(s):
     return str(int(int(s.split()[3][0:2])/timeIntervalLength))
+
+def followers_count_filter(quant):
+    if(quant<followers_count_low):
+        return 1
+    elif(followers_count_low<=quant<=followers_count_high):
+        return 2
+    else:
+        return 3
+
+def friends_count_filter(quant):
+    if(quant<friends_count_low):
+        return 1
+    elif(friends_count_low<=quant<=friends_count_high):
+        return 2
+    else:
+        return 3
+
+def listed_count_filter(quant):
+    if(quant<listed_count_low):
+        return 1
+    elif(listed_count_low<=quant<=listed_count_high):
+        return 2
+    else:
+        return 3
+
+def favourites_count_filter(quant):
+    if(quant<favourites_count_low):
+        return 1
+    elif(favourites_count_low<=quant<=favourites_count_high):
+        return 2
+    else:
+        return 3
+
+def statuses_count_filter(quant):
+    if(quant<statuses_count_low):
+        return 1
+    elif(statuses_count_low<=quant<statuses_count_mid):
+        return 2
+    elif(statuses_count_mid<=quant<=statuses_count_high):
+        return 3
+    else:
+        return 4
+
+def retweet_count_filter(quant):
+    if(quant<retweet_count_low):
+        return 1
+    elif(retweet_count_low<=quant<=retweet_count_high):
+        return 2
+    else:
+        return 3
+
+def favorite_count_filter(quant):
+    if(quant<favorite_count_low):
+        return 1
+    elif(favorite_count_low<=quant<=favorite_count_high):
+        return 2
+    else:
+        return 3
+
+def verified_filter(bool_value):
+    if(bool_value == True):
+        return 1
+    else:
+        return 0
+
 
 folderpath = "../data/" #folder's path
 #files= os.listdir(folderpath) #get all the files' name in the folder
@@ -114,7 +194,16 @@ for file in files:
              weather_dic = weather_filter(dic['text'],weather_dic)
              user_dict = dict((key, value) for key, value in dic['user'].items() if key in user_keys)
              tweet_dict = dict((key, value) for key, value in dic.items() if key in tweet_keys)
-             tweet_dict["created_at"] = filter_time(tweet_dict["created_at"]) 
+             tweet_dict["created_at"] = filter_time(tweet_dict["created_at"])
+             user_dict["followers_count"] = followers_count_filter(user_dict["followers_count"])
+             user_dict["friends_count"] = friends_count_filter(user_dict["friends_count"])
+             user_dict["listed_count"] = listed_count_filter(user_dict["listed_count"])
+             user_dict["favourites_count"] = favourites_count_filter(user_dict["favourites_count"])
+             user_dict["statuses_count"] = statuses_count_filter(user_dict["statuses_count"])
+             user_dict["verified"] = verified_filter(user_dict["verified"])
+             tweet_dict["retweet_count"] = retweet_count_filter(tweet_dict["retweet_count"])
+             tweet_dict["favorite_count"] = favorite_count_filter(tweet_dict["favorite_count"])
+
              #unicode filter for dict values#
              if(user_dict != {} and tweet_dict != {}):
                  for user_key in user_dict.keys():
