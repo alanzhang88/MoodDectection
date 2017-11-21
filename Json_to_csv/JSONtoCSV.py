@@ -219,7 +219,7 @@ for file in files:
                      temp = temp.decode("GBK",'ignore')
                      tweet_dict[tweet_key] = myre.sub('',temp)
                  
-                 final_dict = {**tweet_dict,**user_dict,event_dic,**weather_dic,**label_dict}
+                 final_dict = {**tweet_dict,**user_dict,**event_dic,**weather_dic,**label_dict}
                  #final_dict["created_at"] = filter_time(final_dict["created_at"])
                  writer.writerow(final_dict)
          #csvfile.close()
