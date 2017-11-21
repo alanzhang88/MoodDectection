@@ -147,19 +147,23 @@ except re.error:# Narrow UCS-2 build
                       u'\ud83d[\udc00-\ude4f\ude80-\udeff]|'
                       u'[\u2600-\u2B55])+',
                       re.UNICODE)
-
+headerCount = 0
+writer = None
+csvfile = open("../data/data.csv","w",newline="")
 for file in files: 
      if not os.path.isdir(file): #if it is not a folder, open it
          #jsonData = open(folderpath + "/" + file) #csvfile = open(path+'.csv', 'w')#此处这样写会导致写出来的文件会有空行 
          txtfile = open(folderpath + "/" + file)
-         csvfile = open(folderpath + "/" + file[:-4] + '.csv', 'w',newline='')
+         #csvfile = open(folderpath + "/" + file[:-4] + '.csv', 'w',newline='')
          selected_keys = ['created_at','favorite_count','retweet_count','id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count','traffic','wedding','shooting','birthday','concert','funeral','exam','sports','festival','movie','anniversary','good weather','bad weather','label']
          tweet_keys = ['created_at','favorite_count','retweet_count']
          user_keys = ['id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count']
          #lines = jsonData.readlines()
          lines2 = txtfile.readlines()
-         writer = csv.DictWriter(csvfile,selected_keys)
-         writer.writeheader()
+         if headerCount == 0:
+             writer = csv.DictWriter(csvfile,selected_keys)
+             writer.writeheader()
+             headerCount = 1
          mood = file[:-4]
          label_value = 0
          if(mood == 'happy'):
@@ -218,7 +222,7 @@ for file in files:
                  final_dict = {**tweet_dict,**user_dict,**label_dict}
                  #final_dict["created_at"] = filter_time(final_dict["created_at"])
                  writer.writerow(final_dict)
-         csvfile.close()
+         #csvfile.close()
          txtfile.close()
           #jsonData.close()
-
+csvfile.close()
