@@ -54,7 +54,7 @@ def getCenter(cluster,training_data):
 # this function predicts the mood for a given test dataset
 def predict (train_data,test_data,train_label):
     # Do DESCAN, can tune parameters
-    db = DBSCAN(eps=1,min_samples = 3).fit(train_data)
+    db = DBSCAN(eps=0.5,min_samples = 3).fit(train_data)
     cluster_label = db.labels_
     n_clusters  = len(set(cluster_label)) - (1 if -1 in cluster_label else 0)
 
