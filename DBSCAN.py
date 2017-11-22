@@ -21,7 +21,6 @@ data = data_with_label[:,:-1]
 
 #store ground truth label 
 #label = data_with_label[:,[26]]
-
 label = []
 for line in data_with_label:
     label.append(line[-1])
@@ -38,14 +37,6 @@ def getEuclideanDist(data1, data2):
     array_sum  = sum(array3)
     dist = math.sqrt(array_sum) 
     return dist
-
-'''
-list1 = [1,2,3]
-list2 = [3,2,1]
-
-dist = getEuclideanDist(list1,list2)
-print(dist)
-'''
 
 # this function computes the center of the cluster
 def getCenter(cluster,training_data):
@@ -64,15 +55,14 @@ def getCenter(cluster,training_data):
     return center
 
 
+# this function predicts the mood for a given test dataset
 def predict (train_data,test_data,train_label):
-    # Do DESCAN for the given data, can tune parameters
+    # Do DESCAN, can tune parameters
     db = DBSCAN(eps=1,min_samples = 3).fit(train_data)
     cluster_label = db.labels_
     n_clusters  = len(set(cluster_label)) - (1 if -1 in cluster_label else 0)
 
     #print(cluster_label)
-
-
 
     # this dictionary store each cluster and a list of all the data's indices in that cluster
     # key: cluster number
@@ -82,7 +72,6 @@ def predict (train_data,test_data,train_label):
 
     for i in range(0, n_clusters):
         index_dic[i] = []
-
 
     for j in cluster_label:
         if(j != -1):
@@ -125,7 +114,7 @@ def predict (train_data,test_data,train_label):
 
     #print(center_dic)
 
-    # prediction: for each test data, find it's nearest cluster
+    # prediction: for each test data, find it's nearest cluster and return the nearest cluster's mood label
     pred_label = []
     for data in test_data:
         distance = 10000000
