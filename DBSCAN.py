@@ -2,16 +2,14 @@
 import numpy as np
 import math
 from sklearn.cluster import DBSCAN
-from sklearn import metrics
 from sklearn.utils import shuffle
-from collections import Counter
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 
 
 
-#load csv file
+#load csv file, need to put data.csv and DBSCAN.py in the same folder
 data_with_label = np.loadtxt('sample.csv',delimiter=',',skiprows=1)
 data_with_label = shuffle(data_with_label)
 #print(data)
@@ -40,11 +38,9 @@ def getEuclideanDist(data1, data2):
 
 # this function computes the center of the cluster
 def getCenter(cluster,training_data):
-    temp = []
     center = [0] * len(training_data[0]-1)
     #print(center)
     #center = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    count = 0
     
         #temp.append(data[index])
     for attribute in range (0,len(training_data[0]-1)):
