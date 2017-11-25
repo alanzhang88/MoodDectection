@@ -5,30 +5,38 @@ Created on Wed Nov  1 13:38:47 2017
 @author: admin
 """
 
-import csv 
+import csv
 import json
-#import sys 
+#import sys
 import re
 
 import os
 import config
 
 timeIntervalLength = config.timeIntervalLength
-followers_count_low = config.followers_count_low
-followers_count_high = config.followers_count_high
-friends_count_low = config.friends_count_low
-friends_count_high = config.friends_count_high
-listed_count_low = config.listed_count_low
-listed_count_high = config.listed_count_high
-favourites_count_low = config.favourites_count_low
-favourites_count_high = config.favourites_count_high
-statuses_count_low = config.statuses_count_low
-statuses_count_mid = config.statuses_count_mid
-statuses_count_high = config.statuses_count_high
-retweet_count_low = config.retweet_count_low
-retweet_count_high = config.retweet_count_high
-favorite_count_low = config.favorite_count_low
-favorite_count_high = config.favorite_count_high
+# followers_count_low = config.followers_count_low
+# followers_count_high = config.followers_count_high
+# friends_count_low = config.friends_count_low
+# friends_count_high = config.friends_count_high
+# listed_count_low = config.listed_count_low
+# listed_count_high = config.listed_count_high
+# favourites_count_low = config.favourites_count_low
+# favourites_count_high = config.favourites_count_high
+# statuses_count_low = config.statuses_count_low
+# statuses_count_mid = config.statuses_count_mid
+# statuses_count_high = config.statuses_count_high
+# retweet_count_low = config.retweet_count_low
+# retweet_count_high = config.retweet_count_high
+# favorite_count_low = config.favorite_count_low
+# favorite_count_high = config.favorite_count_high
+
+followers_count = config.followers_count
+friends_count = config.friends_count
+listed_count = config.listed_count
+favourites_count = config.favourites_count
+statuses_count = config.statuses_count
+retweet_count = config.retweet_count
+favorite_count  = config.favorite_count
 
 def event_filter(text,event_dic):
     if(text.find('traffic') != -1):
@@ -129,6 +137,12 @@ def verified_filter(bool_value):
     else:
         return 0
 
+def nominalize_filter(range_list,quant):
+    for i in range(len(range_list)):
+        if quant <= range_list[i]:
+            return i+1
+    return len(range_list) + 1
+
 
 folderpath = "../data/" #folder's path
 #files= os.listdir(folderpath) #get all the files' name in the folder
@@ -150,9 +164,9 @@ except re.error:# Narrow UCS-2 build
 headerCount = 0
 writer = None
 csvfile = open("../data/data.csv","w",newline="")
-for file in files: 
+for file in files:
      if not os.path.isdir(file): #if it is not a folder, open it
-         #jsonData = open(folderpath + "/" + file) #csvfile = open(path+'.csv', 'w')#此处这样写会导致写出来的文件会有空行 
+         #jsonData = open(folderpath + "/" + file) #csvfile = open(path+'.csv', 'w')#此处这样写会导致写出来的文件会有空行
          txtfile = open(folderpath + "/" + file)
          #csvfile = open(folderpath + "/" + file[:-4] + '.csv', 'w',newline='')
          selected_keys = ['created_at','favorite_count','retweet_count','id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count','traffic','wedding','shooting','birthday','concert','funeral','exam','sports','festival','movie','anniversary','good weather','bad weather','label']
@@ -182,31 +196,39 @@ for file in files:
              label_value = -2.5
          elif(mood == 'sad'):
              label_value = -3
-         
+
          label_dict = {'label':label_value}
          for line in lines2:
-             line = line.strip() #remove space at line head and tail 
+             line = line.strip() #remove space at line head and tail
              if not len(line) or line.startswith('#'): #remove lines without content and note line
                 continue
              if (line.find('created_at') == -1): #remove unuseful line
                 continue
              event_dic = {'traffic': 0,'wedding': 0,'shooting': 0,'birthday': 0,'concert': 0,'funeral': 0,'exam': 0,'sports': 0,'festival': 0,'movie': 0,'anniversary': 0}
              weather_dic = {'bad weather':0,'good weather':0}
-             
+
              dic = json.loads(line)
              event_dic = event_filter(dic['text'],event_dic)
              weather_dic = weather_filter(dic['text'],weather_dic)
              user_dict = dict((key, value) for key, value in dic['user'].items() if key in user_keys)
              tweet_dict = dict((key, value) for key, value in dic.items() if key in tweet_keys)
              tweet_dict["created_at"] = filter_time(tweet_dict["created_at"])
-             user_dict["followers_count"] = followers_count_filter(user_dict["followers_count"])
-             user_dict["friends_count"] = friends_count_filter(user_dict["friends_count"])
-             user_dict["listed_count"] = listed_count_filter(user_dict["listed_count"])
-             user_dict["favourites_count"] = favourites_count_filter(user_dict["favourites_count"])
-             user_dict["statuses_count"] = statuses_count_filter(user_dict["statuses_count"])
+             # user_dict["followers_count"] = followers_count_filter(user_dict["followers_count"])
+             # user_dict["friends_count"] = friends_count_filter(user_dict["friends_count"])
+             # user_dict["listed_count"] = listed_count_filter(user_dict["listed_count"])
+             # user_dict["favourites_count"] = favourites_count_filter(user_dict["favourites_count"])
+             # user_dict["statuses_count"] = statuses_count_filter(user_dict["statuses_count"])
+             # user_dict["verified"] = verified_filter(user_dict["verified"])
+             # tweet_dict["retweet_count"] = retweet_count_filter(tweet_dict["retweet_count"])
+             # tweet_dict["favorite_count"] = favorite_count_filter(tweet_dict["favorite_count"])
+             user_dict["followers_count"] = nominalize_filter(followers_count,user_dict["followers_count"])
+             user_dict["friends_count"] = nominalize_filter(friends_count,user_dict["friends_count"])
+             user_dict["listed_count"] = nominalize_filter(listed_count,user_dict["listed_count"])
+             user_dict["favourites_count"] = nominalize_filter(favourites_count,user_dict["favourites_count"])
+             user_dict["statuses_count"] = nominalize_filter(statuses_count,user_dict["statuses_count"])
              user_dict["verified"] = verified_filter(user_dict["verified"])
-             tweet_dict["retweet_count"] = retweet_count_filter(tweet_dict["retweet_count"])
-             tweet_dict["favorite_count"] = favorite_count_filter(tweet_dict["favorite_count"])
+             tweet_dict["retweet_count"] = nominalize_filter(retweet_count,tweet_dict["retweet_count"])
+             tweet_dict["favorite_count"] = nominalize_filter(favorite_count,tweet_dict["favorite_count"])
 
              #unicode filter for dict values#
              if(user_dict != {} and tweet_dict != {}):
@@ -218,7 +240,7 @@ for file in files:
                      temp = str(tweet_dict[tweet_key]).encode("GBK",'ignore')
                      temp = temp.decode("GBK",'ignore')
                      tweet_dict[tweet_key] = myre.sub('',temp)
-                 
+
                  final_dict = {**tweet_dict,**user_dict,**event_dic,**weather_dic,**label_dict}
                  #final_dict["created_at"] = filter_time(final_dict["created_at"])
                  writer.writerow(final_dict)

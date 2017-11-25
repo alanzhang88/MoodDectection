@@ -5,6 +5,8 @@ from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
+import sys
+
 
 INPUT_PATH = "./data/data.csv"
 
@@ -12,8 +14,14 @@ dataset = pd.read_csv(INPUT_PATH)
 
 dataset = shuffle(dataset)
 
+droplist = ["label"]
+if len(sys.argv) > 1:
+    for arg in sys.argv[1:]:
+        print("Dropping feature ",arg)
+        droplist.append(arg)
+
 y = dataset["label"].values
-x = dataset.drop("label",axis=1).values
+x = dataset.drop(droplist,axis=1).values
 
 kf = KFold(n_splits=5)
 n_fold = 0
@@ -26,7 +34,7 @@ for train_keys, test_keys in kf.split(range(dataLen)):
     test_y = np.take(y,test_keys)
     n_fold += 1
     #paramters can be tweaked
-    clf = RandomForestClassifier()
+    clf = RandomForestClassifier(n_estimators=20, criterion="entropy")
     clf.fit(train_x,train_y)
     #this gives a preidiction
     prediction = clf.predict(test_x)
