@@ -12,6 +12,7 @@ import re
 
 import os
 import config
+import sys
 
 timeIntervalLength = config.timeIntervalLength
 # followers_count_low = config.followers_count_low
@@ -37,6 +38,7 @@ favourites_count = config.favourites_count
 statuses_count = config.statuses_count
 retweet_count = config.retweet_count
 favorite_count  = config.favorite_count
+timeZone = config.timeZone
 
 def event_filter(text,event_dic):
     if(text.find('traffic') != -1):
@@ -145,6 +147,8 @@ def nominalize_filter(range_list,quant):
 
 
 folderpath = "../data/" #folder's path
+if len(sys.argv) == 2:
+    folderpath = sys.argv[1]
 #files= os.listdir(folderpath) #get all the files' name in the folder
 files = ["anger.txt","surprise.txt","happy.txt","sad.txt","disgust.txt","fear.txt","anticipation.txt","love.txt"]
 
@@ -169,7 +173,7 @@ for file in files:
          #jsonData = open(folderpath + "/" + file) #csvfile = open(path+'.csv', 'w')#此处这样写会导致写出来的文件会有空行
          txtfile = open(folderpath + "/" + file)
          #csvfile = open(folderpath + "/" + file[:-4] + '.csv', 'w',newline='')
-         selected_keys = ['created_at','favorite_count','retweet_count','id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count','traffic','wedding','shooting','birthday','concert','funeral','exam','sports','festival','movie','anniversary','good weather','bad weather','label']
+         selected_keys = ['created_at','favorite_count','retweet_count','id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count','traffic','wedding','shooting','birthday','concert','funeral','exam','sports','festival','movie','anniversary','good weather','bad weather','PST','MST','CST','EST','label']
          tweet_keys = ['created_at','favorite_count','retweet_count']
          user_keys = ['id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count']
          #lines = jsonData.readlines()
@@ -241,7 +245,7 @@ for file in files:
                      temp = temp.decode("GBK",'ignore')
                      tweet_dict[tweet_key] = myre.sub('',temp)
 
-                 final_dict = {**tweet_dict,**user_dict,**event_dic,**weather_dic,**label_dict}
+                 final_dict = {**tweet_dict,**user_dict,**event_dic,**weather_dic,**timeZone,**label_dict}
                  #final_dict["created_at"] = filter_time(final_dict["created_at"])
                  writer.writerow(final_dict)
          #csvfile.close()

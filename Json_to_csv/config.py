@@ -22,3 +22,4 @@ favourites_count = [5000,10000]
 statuses_count = [8000,16000,24000]
 retweet_count = [25,50]
 favorite_count = [25,50]
+timeZone = {"PST":1,"MST":0,"CST":0,"EST":0}
