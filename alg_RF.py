@@ -5,6 +5,9 @@ from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import roc_auc_score
 import sys
 
 
@@ -34,12 +37,20 @@ for train_keys, test_keys in kf.split(range(dataLen)):
     test_y = np.take(y,test_keys)
     n_fold += 1
     #paramters can be tweaked
-    clf = RandomForestClassifier(n_estimators=20, criterion="entropy")
+    clf = RandomForestClassifier(n_estimators=10, criterion="gini")
     clf.fit(train_x,train_y)
     #this gives a preidiction
     prediction = clf.predict(test_x)
+    train_prediction = clf.predict(train_x)
     #this gives probability for each labels
     prediction_proba = clf.predict_proba(test_x)
-    print("Train Accuracy :: ", accuracy_score(train_y, clf.predict(train_x)))
+    
+    print("Train Accuracy :: ", accuracy_score(train_y, train_prediction))
     print("Test Accuracy  :: ", accuracy_score(test_y, prediction))
+    print("Train Precision :: ", precision_score(train_y, train_prediction))
+    print("Test Precision  :: ", precision_score(test_y, prediction))
+    print("Train Recall :: ", recall_score(train_y, train_prediction))
+    print("Test Recall  :: ", recall_score(test_y, prediction))
+    print("Train ROC area under curve :: ", roc_auc_score(train_y, train_prediction))
+    print("Test ROC area under curve  :: ", roc_auc_score(test_y, prediction))
     print("Confusion matrix \n", confusion_matrix(test_y, prediction))
