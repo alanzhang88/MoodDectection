@@ -6,7 +6,9 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
-
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import roc_auc_score
 
 
 #load csv file, need to put data.csv and DBSCAN.py in the same folder
@@ -155,9 +157,16 @@ for train_index, test_index in kf.split(range(dataLen)):
     #print(prediction)
   
     # compute and evaluate accuracy: compare test data's ground truth mood label and assigned mood label
-    print("Test Accuracy :: ", accuracy_score(test_label, test_prediction))
     print("Train Accuracy  :: ", accuracy_score(train_label, train_prediction))
+    print("Test Accuracy :: ", accuracy_score(test_label, test_prediction))
+    print("Train Precision :: ", precision_score(train_label, train_prediction))
+    print("Test Precision  :: ", precision_score(test_label, test_prediction))
+    print("Train Recall :: ", recall_score(train_label, train_prediction))
+    print("Test Recall  :: ", recall_score(test_label, test_prediction))
+    print("Train ROC area under curve :: ", roc_auc_score(train_label, train_prediction))
+    print("Test ROC area under curve  :: ", roc_auc_score(test_label, test_prediction))
     print("Confusion matrix \n", confusion_matrix(test_label, test_prediction))
+
 
     print('end!!!!')
 
