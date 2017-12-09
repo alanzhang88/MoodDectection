@@ -12,7 +12,7 @@ from sklearn.metrics import roc_auc_score
 
 
 #load csv file, need to put data.csv and DBSCAN.py in the same folder
-data_with_label = np.loadtxt('sample.csv',delimiter=',',skiprows=1)
+data_with_label = np.loadtxt('./data.csv',delimiter=',',skiprows=1)
 data_with_label = shuffle(data_with_label)
 #print(data)
 
@@ -98,9 +98,6 @@ def predict (train_data,test_data,train_label):
 
     #print(label_dic)
 
-
-
-
     # this dictionary store each cluster and the cluster's center
     # key: cluster number
     # value: cluster's center
@@ -133,9 +130,6 @@ def predict (train_data,test_data,train_label):
 
     return pred_label
 
-
-
-
 kf = KFold(n_splits=5)
 n_fold = 0
 dataLen = len(label)
@@ -166,8 +160,6 @@ for train_index, test_index in kf.split(range(dataLen)):
     print("Train ROC area under curve :: ", roc_auc_score(train_label, train_prediction))
     print("Test ROC area under curve  :: ", roc_auc_score(test_label, test_prediction))
     print("Confusion matrix \n", confusion_matrix(test_label, test_prediction))
-
-
     print('end!!!!')
 
 
