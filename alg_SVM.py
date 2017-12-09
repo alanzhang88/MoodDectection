@@ -11,7 +11,7 @@ from sklearn.metrics import roc_auc_score
 import sys
 
 
-INPUT_PATH = "./data/data.csv"
+INPUT_PATH = "./data.csv"
 
 dataset = pd.read_csv(INPUT_PATH)
 
