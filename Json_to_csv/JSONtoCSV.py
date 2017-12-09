@@ -146,7 +146,7 @@ def nominalize_filter(range_list,quant):
     return len(range_list) + 1
 
 
-folderpath = "../data/" #folder's path
+folderpath = "../" #folder's path
 if len(sys.argv) == 2:
     folderpath = sys.argv[1]
 #files= os.listdir(folderpath) #get all the files' name in the folder
@@ -167,10 +167,10 @@ except re.error:# Narrow UCS-2 build
                       re.UNICODE)
 headerCount = 0
 writer = None
-csvfile = open("../data/data.csv","w",newline="")
+csvfile = open("../data.csv","w",newline="")
 for file in files:
      if not os.path.isdir(file): #if it is not a folder, open it
-         #jsonData = open(folderpath + "/" + file) #csvfile = open(path+'.csv', 'w')#此处这样写会导致写出来的文件会有空行
+         #jsonData = open(folderpath + "/" + file) #csvfile = open(path+'.csv', 'w')
          txtfile = open(folderpath + "/" + file)
          #csvfile = open(folderpath + "/" + file[:-4] + '.csv', 'w',newline='')
          selected_keys = ['created_at','favorite_count','retweet_count','id_str','location','followers_count','friends_count','listed_count','favourites_count','verified','statuses_count','traffic','wedding','shooting','birthday','concert','funeral','exam','sports','festival','movie','anniversary','good weather','bad weather','PST','MST','CST','EST','label']
